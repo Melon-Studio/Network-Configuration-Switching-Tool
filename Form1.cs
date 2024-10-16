@@ -42,7 +42,7 @@ namespace Network_Configuration_Switching_Tool
 
             if (!File.Exists(ConfigFile))
             {
-                File.Create(ConfigFile);
+                File.Create(ConfigFile).Close();
             }
 
             try
