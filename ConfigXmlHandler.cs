@@ -27,7 +27,8 @@ namespace Network_Configuration_Switching_Tool
                    Ipv4Address = item.Element("ipv4Address")?.Value,
                    Ipv4Mask = item.Element("ipv4Mask")?.Value,
                    Ipv4Gateway = item.Element("ipv4Gateway")?.Value,
-                   Ipv4DNSserver = item.Element("ipv4DNSserver")?.Value
+                   Ipv4DNSserver = item.Element("ipv4DNSserver")?.Value,
+                   Remark = item.Element("remark")?.Value
                })
                .ToList();
         }
@@ -40,7 +41,8 @@ namespace Network_Configuration_Switching_Tool
                         new XElement("ipv4Address", item.Ipv4Address),
                         new XElement("ipv4Mask", item.Ipv4Mask),
                         new XElement("ipv4Gateway", item.Ipv4Gateway),
-                        new XElement("ipv4DNSserver", item.Ipv4DNSserver)
+                        new XElement("ipv4DNSserver", item.Ipv4DNSserver),
+                        new XElement("remark", item.Remark)
                     ))
                 )
             );
@@ -69,6 +71,20 @@ namespace Network_Configuration_Switching_Tool
             if (index >= 0 && index < items.Count)
             {
                 items.RemoveAt(index);
+                WriteItems(items);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "索引超出范围。");
+            }
+        }
+
+        public static void ModifyItemByIndex(int index, ConfigurationEntity item)
+        {
+            List<ConfigurationEntity> items = ReadItems();
+            if (index >= 0 && index < items.Count)
+            {
+                items[index] = item;
                 WriteItems(items);
             }
             else

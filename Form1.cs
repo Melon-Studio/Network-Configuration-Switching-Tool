@@ -21,7 +21,7 @@ namespace Network_Configuration_Switching_Tool
     {
         private static string ApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "NetworkConfigurationSwitchingTool";
         private static string ConfigFile = ApplicationData + "\\config.xml";
-        List<NetworkInterface> adapterList = new List<NetworkInterface>();
+        List<NetworkInterface> AdapterList = new List<NetworkInterface>();
 
         public Form1()
         {
@@ -66,7 +66,7 @@ namespace Network_Configuration_Switching_Tool
             List<ConfigurationEntity> list = ConfigXmlHandler.ReadItems();
             foreach (var item in list)
             {
-                string[] rowData = { item.Ipv4Address, item.Ipv4Mask, item.Ipv4Gateway, item.Ipv4DNSserver };
+                string[] rowData = { item.Ipv4Address, item.Ipv4Mask, item.Ipv4Gateway, item.Ipv4DNSserver, item.Remark };
                 dataGridView1.Rows.Add(rowData.ToArray());
             }
         }
@@ -84,8 +84,8 @@ namespace Network_Configuration_Switching_Tool
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 
-            string[] header = { "IP 地址", "子网掩码", "网关", "DNS"};
-            string[] column_name = { "Ipv4Address", "Ipv4Mask", "Ipv4Gateway", "Ipv4DNSserver" };
+            string[] header = { "IP 地址", "子网掩码", "网关", "DNS", "备注"};
+            string[] column_name = { "Ipv4Address", "Ipv4Mask", "Ipv4Gateway", "Ipv4DNSserver", "Remark" };
 
             dataGridView1.Columns.AddRange(header.Select((h, index) => new DataGridViewTextBoxColumn
             {
@@ -111,10 +111,10 @@ namespace Network_Configuration_Switching_Tool
 
             foreach (NetworkInterface adapter in nics)
             {
-                adapterList.Add(adapter);
+                AdapterList.Add(adapter);
             }
 
-            comboBox1.DataSource = adapterList;
+            comboBox1.DataSource = AdapterList;
             comboBox1.DisplayMember = "Description";
             comboBox1.ValueMember = "Description";
             comboBox1.SelectedIndex = 0;
@@ -167,9 +167,29 @@ namespace Network_Configuration_Switching_Tool
             }
         }
 
+        private ConfigurationEntity GetSelectRowData()
+        {
+            var config = new ConfigurationEntity();
+            var selectedRow = dataGridView1.SelectedRows[0];
+            if (selectedRow != null)
+            {
+                config.Ipv4Address = GetCellValueSafely(selectedRow.Cells[0]) ?? string.Empty;
+                config.Ipv4Mask = GetCellValueSafely(selectedRow.Cells[1]) ?? string.Empty;
+                config.Ipv4Gateway = GetCellValueSafely(selectedRow.Cells[2]) ?? string.Empty;
+                config.Ipv4DNSserver = GetCellValueSafely(selectedRow.Cells[3]) ?? string.Empty;
+                config.Remark = GetCellValueSafely(selectedRow.Cells[4]) ?? string.Empty;
+            }
+            return config;
+        }
+
+        private string GetCellValueSafely(DataGridViewCell cell)
+        {
+            return cell.Value != null ? cell.Value.ToString() : null;
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            var dialog = new Form2();
+            var dialog = new Form2(0);
             dialog.ShowDialog();
             LoadData();
             dialog.Dispose();
@@ -196,18 +216,20 @@ namespace Network_Configuration_Switching_Tool
 
         private void button3_Click(object sender, EventArgs e)
         {
-            var config = new ConfigurationEntity();
-            config.Ipv4Address = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
-            config.Ipv4Mask = dataGridView1.SelectedRows[0].Cells[1].Value.ToString();
-            config.Ipv4Gateway = dataGridView1.SelectedRows[0].Cells[2].Value.ToString();
-            config.Ipv4DNSserver = dataGridView1.SelectedRows[0].Cells[3].Value.ToString();
-            ConfigureNetworkAdapter(comboBox1.SelectedValue.ToString(), config);
-
+            ConfigureNetworkAdapter(comboBox1.SelectedValue.ToString(), GetSelectRowData());
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(ApplicationData);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var dialog = new Form2(1, dataGridView1.SelectedRows[0].Index, GetSelectRowData());
+            dialog.ShowDialog();
+            LoadData();
+            dialog.Dispose();
         }
 
         private void githubToolStripMenuItem_Click(object sender, EventArgs e)
@@ -217,12 +239,7 @@ namespace Network_Configuration_Switching_Tool
 
         private void poJieToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://www.52pojie.cn/home.php?mod=space&uid=1214056");
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/Melon-Studio");
+            System.Diagnostics.Process.Start("https://www.52pojie.cn/thread-1973112-1-1.html");
         }
 
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)

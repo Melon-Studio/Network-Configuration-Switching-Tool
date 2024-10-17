@@ -24,5 +24,9 @@ namespace Network_Configuration_Switching_Tool
         {
             get; set;
         }
+        public string Remark
+        {
+            get; set;
+        }
     }
 }

@@ -13,9 +13,26 @@ namespace Network_Configuration_Switching_Tool
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        private int WindowStatus = 0;
+        private int SelectIndex = 0;
+
+        
+        public Form2(int windowStatus, int SelectIndex = 0, ConfigurationEntity item = null)
         {
             InitializeComponent();
+            this.WindowStatus = windowStatus;
+            this.SelectIndex = SelectIndex;
+            if ( item != null ) 
+            {
+                textBox1.Text = item.Ipv4Address;
+                textBox2.Text = item.Ipv4Mask;
+                textBox3.Text = item.Ipv4Gateway;
+                textBox4.Text = item.Ipv4DNSserver;
+                textBox5.Text = item.Remark;
+            };
+            if (WindowStatus == 0) button1.Text = "新增";
+            if (WindowStatus == 1) button1.Text = "修改";
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -45,8 +62,10 @@ namespace Network_Configuration_Switching_Tool
             data.Ipv4Mask = textBox2.Text;
             data.Ipv4Gateway = textBox3.Text;
             data.Ipv4DNSserver = textBox4.Text;
+            data.Remark = textBox5.Text;
 
-            ConfigXmlHandler.AddItem(data);
+            if (WindowStatus == 0) ConfigXmlHandler.AddItem(data);
+            if (WindowStatus == 1) ConfigXmlHandler.ModifyItemByIndex(SelectIndex, data);
             this.Close();
         }
 
