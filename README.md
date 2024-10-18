@@ -1,5 +1,6 @@
 # 网络配置切换工具: Network Configuration Switching Tool
 该工具用于快捷切换网络适配器的IPv4 网络配置，单文件免安装，通过手动添加配置，然后选择本地计算机的网络适配器，然后选择添加的配置，点击修改并保存按钮，即可完成快速切换配置。
+![image](https://github.com/user-attachments/assets/212092e9-e21b-4250-8456-0b0077f718ca)
 
 ## 使用方法
 ### 添加配置
