@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace Network_Configuration_Switching_Tool
 {
@@ -15,7 +16,7 @@ namespace Network_Configuration_Switching_Tool
     {
         private int WindowStatus = 0;
         private int SelectIndex = 0;
-
+        private bool IsDHCPStatus = false;
         
         public Form2(int windowStatus, int SelectIndex = 0, ConfigurationEntity item = null)
         {
@@ -37,25 +38,28 @@ namespace Network_Configuration_Switching_Tool
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (!IsValidIPAddress(textBox1.Text))
+            if(!IsDHCPStatus)
             {
-                MessageBox.Show("IP 地址不合法");
-                return;
-            }
-            if (!IsValidSubnetMask(textBox2.Text))
-            {
-                MessageBox.Show("子网掩码不合法");
-                return;
-            }
-            if (!IsValidIPAddress(textBox3.Text))
-            {
-                MessageBox.Show("网关不合法");
-                return;
-            }
-            if (!IsValidIPAddress(textBox4.Text)) 
-            { 
-                MessageBox.Show("DNS 不合法"); 
-                return;
+                if (!IsValidIPAddress(textBox1.Text))
+                {
+                    MessageBox.Show("IP 地址不合法");
+                    return;
+                }
+                if (!IsValidSubnetMask(textBox2.Text))
+                {
+                    MessageBox.Show("子网掩码不合法");
+                    return;
+                }
+                if (!IsValidIPAddress(textBox3.Text))
+                {
+                    MessageBox.Show("网关不合法");
+                    return;
+                }
+                if (!IsValidIPAddress(textBox4.Text))
+                {
+                    MessageBox.Show("DNS 不合法");
+                    return;
+                }
             }
             var data = new ConfigurationEntity();
             data.Ipv4Address = textBox1.Text;
@@ -115,6 +119,35 @@ namespace Network_Configuration_Switching_Tool
             }
 
             return onesCount > 0 && onesCount < 32 && isContinuousOnes;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked == true)
+            {
+                textBox1.Enabled = false;
+                textBox1.Text = "";
+                textBox2.Enabled = false;
+                textBox2.Text = "";
+                textBox3.Enabled = false;
+                textBox3.Text = "";
+                textBox4.Enabled = false;
+                textBox4.Text = "";
+                textBox5.Enabled = false;
+                textBox5.Text = "DHCP";
+                this.IsDHCPStatus = true;
+            }
+            else
+            {
+                textBox1.Enabled = true;
+                textBox2.Enabled = true;
+                textBox3.Enabled = true;
+                textBox4.Enabled = true;
+                textBox5.Enabled = true;
+                textBox5.Text = "";
+                this.IsDHCPStatus = false;
+            }
+
         }
     }
 }

@@ -134,7 +134,16 @@ namespace Network_Configuration_Switching_Tool
                     {
                         if (!(bool)obj["IPEnabled"])
                         {
-                            MessageBox.Show("该适配器禁用了 IP 配置，已取消配置。");
+                            MessageBox.Show("请检查网线是否插入");
+                            continue;
+                        }
+
+                        if (config.Remark.Equals("DHCP"))
+                        {
+                            inPar = obj.GetMethodParameters("EnableDHCP");
+                            outPar = obj.InvokeMethod("EnableDHCP", inPar, null);
+                            MessageBox.Show("已配置选择的网络配置到对应的适配器。");
+                            continue;
                         }
 
                         if (config.Ipv4Address != null && config.Ipv4Mask != null)
