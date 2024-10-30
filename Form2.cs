@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -50,12 +51,12 @@ namespace Network_Configuration_Switching_Tool
                     MessageBox.Show("子网掩码不合法");
                     return;
                 }
-                if (!IsValidIPAddress(textBox3.Text))
+                if (!string.IsNullOrEmpty(textBox3.Text) && !IsValidIPAddress(textBox3.Text))
                 {
                     MessageBox.Show("网关不合法");
                     return;
                 }
-                if (!IsValidIPAddress(textBox4.Text))
+                if (!string.IsNullOrEmpty(textBox4.Text) && !IsValidIPAddress(textBox4.Text))
                 {
                     MessageBox.Show("DNS 不合法");
                     return;
